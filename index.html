@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CropWise | Irrigation Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">✳</div><div><b>CropWise</b><small>FIELD INTELLIGENCE</small></div></div>
+    <div class="side-label">WORKSPACE</div>
+    <button class="nav active" data-page="overview"><span>▦</span> Overview</button>
+    <button class="nav" data-page="fields"><span>▤</span> Field priorities</button>
+    <button class="nav" data-page="predict"><span>⌁</span> Stress assessment</button>
+    <button class="nav" data-page="insights"><span>◷</span> Model insights</button>
+    <div class="sidebar-bottom"><div class="status-dot"></div><div><b>Decision support</b><small>Human-reviewed recommendations</small></div></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div><div class="eyebrow">AGRICULTURE / WATER MANAGEMENT</div><h1 id="page-title">Good evening, field manager.</h1><p id="page-subtitle">Monitor crop stress and allocate irrigation where it matters most.</p></div>
+      <div class="top-actions"><span class="api-pill" id="api-status"><i></i> Checking API…</span><button class="icon-btn" title="Refresh data" id="refresh-btn">↻</button><div class="avatar">FM</div></div>
+    </header>
+
+    <section class="page active" id="overview">
+      <div class="hero"><div><span class="hero-tag">✦ SMART IRRIGATION, BETTER DECISIONS</span><h2>Every drop should<br>reach the <em>right field.</em></h2><p>Use field conditions and ML-based stress estimates to guide irrigation planning—not guesswork.</p><button class="primary-btn" data-go="predict">Assess a field <span>→</span></button></div><div class="hero-art"><div class="sun"></div><div class="hill h1"></div><div class="hill h2"></div><div class="plant plant1">♧</div><div class="plant plant2">♧</div><div class="water-line"></div><div class="hero-note"><b>FIELD-FIRST</b><small>Risk • Reasons • Priority</small></div></div></div>
+      <div class="section-heading"><div><h3>Dataset snapshot</h3><p>Based on the uploaded training dataset (9,184 observations).</p></div><span class="tag">TRAINING DATA</span></div>
+      <div class="metric-grid">
+        <article class="metric"><div class="metric-top"><span>Observations</span><span class="metric-icon">▤</span></div><strong>9,184</strong><small>Rows in supplied dataset</small></article>
+        <article class="metric">
+          <div class="metric-top">
+            <span>Farm plots</span>
+            <span class="metric-icon">⌖</span>
+          </div>
+          <strong id="plot-count">—</strong>
+          <small>Plots represented in dataset</small>
+        </article>
+        <article class="metric"><div class="metric-top"><span>Crop types</span><span class="metric-icon">♧</span></div><strong>8</strong><small>Represented in training data</small></article>
+        <article class="metric"><div class="metric-top"><span>Stress classes</span><span class="metric-icon">◉</span></div><strong>5</strong><small>Including waterlogging risk</small></article>
+      </div>
+
+<!-- LIVE WEATHER SECTION -->
+<section class="panel weather-panel">
+  <div class="panel-head">
+    <div>
+      <h3>Live farm weather</h3>
+      <p>Current weather conditions for your farm location.</p>
+    </div>
+    <span class="tag">WEATHER</span>
+  </div>
+
+  <div class="weather-controls">
+    <button type="button" class="primary-btn" id="use-location-btn">
+      Use my current location
+    </button>
+
+    <form id="weather-search-form" class="weather-search">
+    <input
+        type="text"
+        id="weather-city"
+        placeholder="Enter city or town..."
+        autocomplete="off"
+        required
+    >
+    <button type="submit" class="outline-btn">Search</button>
+</form>
+
+<div id="weather-suggestions" class="weather-suggestions" hidden></div>
+  </div>
+
+  <p id="weather-status" class="weather-status">
+    Choose your current location or search for your farm town.
+  </p>
+
+  <div id="weather-results" class="weather-results" hidden>
+    <div class="weather-main">
+      <div>
+        <p id="weather-location-label" class="weather-location"></p>
+        <h2 id="weather-temp">--°C</h2>
+        <p id="weather-condition">--</p>
+      </div>
+      <div id="weather-icon" class="weather-icon">🌤️</div>
+    </div>
+
+    <div class="weather-metrics">
+      <div class="weather-metric">
+        <span>Humidity</span>
+        <strong id="weather-humidity">--</strong>
+      </div>
+      <div class="weather-metric">
+        <span>Wind speed</span>
+        <strong id="weather-wind">--</strong>
+      </div>
+      <div class="weather-metric">
+        <span>Precipitation now</span>
+        <strong id="weather-rain">--</strong>
+      </div>
+      <div class="weather-metric">
+        <span>Today's forecast rain</span>
+        <strong id="weather-daily-rain">--</strong>
+      </div>
+      <div class="weather-metric">
+        <span>Today's maximum</span>
+        <strong id="weather-max">--</strong>
+      </div>
+      <div class="weather-metric">
+        <span>Today's minimum</span>
+        <strong id="weather-min">--</strong>
+      </div>
+    </div>
+    <!-- NEXT 24 HOURS RAIN FORECAST -->
+    <div class="rain-forecast-panel">
+        <div class="rain-forecast-heading">
+            <div>
+                <h3>Rain forecast – Next 24 hours</h3>
+                <p>Hourly rainfall prediction for your selected location.</p>
+            </div>
+            <span class="tag">24-HOUR FORECAST</span>
+        </div>
+    
+        <div id="rain-forecast-content">
+            <p>Rain forecast will appear after selecting a location.</p>
+        </div>
+    </div>
+
+    <div class="weather-footer">
+      <span id="weather-updated"></span>
+      <button type="button" class="text-btn" id="weather-refresh">
+        ↻ Refresh weather
+      </button>
+    </div>
+  </div>
+
+  <p class="weather-disclaimer">
+    Weather information is model-based and may differ from actual
+    conditions at an individual farm. Verify important field conditions locally.
+  </p>
+</section>
+<!-- END LIVE WEATHER SECTION -->
+
+      <div class="content-grid">
+        <article class="panel"><div class="panel-head"><div><h3>Observed stress categories</h3><p>Actual target-label distribution in the uploaded CSV—not live predictions.</p></div><span class="tag">HISTORICAL</span></div><div class="bar-list" id="class-bars"></div></article>
+        <article class="panel callout"><div class="callout-icon">✦</div><h3>How CropWise helps</h3><p>It turns soil, weather and crop observations into a field-level risk view that supports timely, explainable irrigation decisions.</p><ul><li>Compare stress risk across plots</li><li>See factors associated with each prediction</li><li>Review a transparent priority score</li></ul><button class="text-btn" data-go="fields">View field priorities →</button></article>
+      </div>
+      
+    </section>
+
+    <section class="page" id="fields">
+      <div class="section-heading"><div><h3>Field irrigation priorities</h3><p>Fields ranked using the priority score returned by your backend.</p></div><button class="outline-btn" id="reload-fields">↻ Refresh fields</button></div>
+      <div class="filter-row"><input id="field-search" placeholder="Search farm, plot or crop…"><select id="risk-filter"><option value="">All risk levels</option><option>Severe</option><option>High</option><option>Moderate</option><option>Low</option><option>Waterlogging Risk</option></select><span class="muted" id="field-count">Waiting for API data</span></div>
+      <div class="table-wrap"><table><thead><tr><th>RANK</th><th>FIELD</th><th>CROP / STAGE</th><th>STRESS RISK</th><th>PRIORITY SCORE</th><th>MAIN CONTRIBUTOR</th><th></th></tr></thead><tbody id="field-table"><tr><td colspan="7" class="empty">Connect the FastAPI backend to load field rankings.</td></tr></tbody></table></div>
+      
+    </section>
+
+    <section class="page" id="predict">
+      <div class="section-heading"><div><h3>Field stress assessment</h3><p>Enter one field observation and request a prediction from the trained Random Forest model.</p></div><span class="tag">MODEL INFERENCE</span></div>
+      <div class="form-layout">
+        <form class="panel form-panel" id="predict-form">
+          <div class="form-section"><h4>01 / Field & crop details</h4><div class="form-grid">
+            <label>Farm ID<input name="Farm_ID" placeholder="FARM_001" value="FARM_001"></label><label>Plot ID<input name="Plot_ID" placeholder="PLOT_001_01" value="PLOT_001_01"></label>
+            <label>Crop type<select name="Crop_Type"><option>Millet</option><option>Maize</option><option>Wheat</option><option>Soybean</option><option>Groundnut</option><option>Tomato</option><option>Cotton</option><option>Rice</option></select></label>
+            <label>Growth stage<select name="Crop_Growth_Stage"><option>Germination</option><option>Vegetative</option><option>Flowering</option><option>Fruiting</option><option>Maturity</option></select></label>
+            <label>Soil texture<select name="Soil_Texture_Type"><option>Loam</option><option>Loamy Sand</option><option>Sandy</option><option>Sandy Loam</option><option>Clay</option><option>Clay Loam</option><option>Black Soil</option><option>Alluvial Soil</option></select></label>
+            <label>Season<select name="Season"><option>Winter</option><option>Summer</option><option>Monsoon</option><option>Post-Monsoon</option></select></label>
+          </div></div>
+          <div class="form-section"><h4>02 / Soil moisture & condition</h4><div class="form-grid">
+            <label>Soil moisture · 10 cm (%)<input name="Soil_Moisture_Current_10cm_Pct" type="number" step=".01" value="21.23" required></label>
+            <label>Soil moisture · 20 cm (%)<input name="Soil_Moisture_Current_20cm_Pct" type="number" step=".01" value="22.34" required></label>
+            <label>Soil moisture · 40 cm (%)<input name="Soil_Moisture_Current_40cm_Pct" type="number" step=".01" value="24.17" required></label>
+            <label>Soil moisture · 60 cm (%)<input name="Soil_Moisture_Current_60cm_Pct" type="number" step=".01" value="20.77" required></label>
+            <label>Soil temperature (°C)<input name="Soil_Temperature_10cm_C" type="number" step=".01" value="20.89" required></label>
+            <label>Field capacity (%)<input name="Field_Capacity_Pct" type="number" step=".01" value="30.57" required></label>
+            <label>Permanent wilting point (%)<input name="Permanent_Wilting_Point_Pct" type="number" step=".01" value="14.22" required></label>
+            <label>Soil organic matter (%)<input name="Soil_Organic_Matter_Pct" type="number" step=".01" value="2.1"></label>
+          </div></div>
+          <div class="form-section"><h4>03 / Weather & vegetation</h4><div class="form-grid">
+            <label>Air temperature (°C)<input name="Ambient_Air_Temperature_C" type="number" step=".01" value="23.5" required></label>
+            <label>Relative humidity (%)<input name="Relative_Humidity_Pct" type="number" step=".01" value="70.22" required></label>
+            <label>Rainfall · past 24h (mm)<input name="Precipitation_Past_24h_mm" type="number" step=".01" value="0"></label>
+            <label>ET₀ (mm)<input name="Reference_Evapotranspiration_ET0_mm" type="number" step=".01" value="1"></label>
+            <label>Solar radiation (MJ/m²)<input name="Solar_Radiation_MJ_m2" type="number" step=".01" value="17.59"></label>
+            <label>Wind speed (km/h)<input name="Wind_Speed_kmh" type="number" step=".01" value="12.37"></label>
+            <label>NDVI<input name="Normalized_Vegetation_Index_NDVI" type="number" step=".001" min="-1" max="1" value=".277"></label>
+            <label>Canopy cover (%)<input name="Canopy_Cover_Pct" type="number" step=".01" value="22.29"></label>
+          </div></div>
+          <div class="form-section"><h4>04 / Irrigation & management</h4><div class="form-grid">
+            <label>Irrigation method<select name="Irrigation_Method"><option>Sprinkler</option><option>Drip</option><option>Flood</option><option>Rainfed</option></select></label>
+            <label>Irrigation applied · 48h (mm)<input name="Irrigation_Applied_48h_mm" type="number" step=".01" value="0"></label>
+            <label>Drainage class<select name="Soil_Drainage_Class"><option>Poorly Drained</option><option>Moderately Drained</option><option>Well Drained</option></select></label>
+            <label>Bulk density (g/cm³)<input name="Soil_Bulk_Density_g_cm3" type="number" step=".001" value="1.459"></label>
+          </div></div>
+          <div class="form-actions"><button type="reset" class="outline-btn">Reset form</button><button type="submit" class="primary-btn" id="predict-btn">Predict stress risk <span>→</span></button></div>
+        </form>
+        <aside class="panel result-panel" id="prediction-result"><div class="result-placeholder"><div class="placeholder-icon">⌁</div><h3>Prediction will appear here</h3><p>Complete the field observation and select <b>Predict stress risk</b>. The result will be generated by your connected model API.</p><div class="mini-steps"><span>1. Field inputs</span><span>2. ML inference</span><span>3. Risk & reasons</span></div></div></aside>
+      </div>
+    </section>
+
+    <section class="page" id="insights">
+      <div class="section-heading"><div><h3>Model insights</h3><p>Explain what is influencing the model's stress estimates.</p></div><span class="tag">EXPLAINABILITY</span></div>
+      <div class="content-grid insights-grid">
+        <article class="panel"><div class="panel-head"><div><h3>Feature importance</h3><p>Values supplied by the trained model/API.</p></div></div><div id="importance-list" class="importance-list"><div class="empty">Connect GET /api/feature-importance to display feature importance.</div></div></article>
+        <article class="panel"><h3>How to interpret the result</h3><div class="guide-row"><span class="risk-dot severe"></span><div><b>Severe / High</b><p>Review promptly; verify moisture and crop conditions in the field.</p></div></div><div class="guide-row"><span class="risk-dot moderate"></span><div><b>Moderate</b><p>Monitor conditions and plan irrigation based on local water availability.</p></div></div><div class="guide-row"><span class="risk-dot low"></span><div><b>Low</b><p>Continue monitoring; avoid unnecessary irrigation.</p></div></div><div class="guide-row"><span class="risk-dot water"></span><div><b>Waterlogging risk</b><p>Do not interpret this as a need for more irrigation; inspect drainage and field saturation.</p></div></div></article>
+      </div>
+    </section>
+    <footer>CropWise · ML-assisted irrigation decision support</footer>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body></html>
